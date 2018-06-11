@@ -1303,8 +1303,14 @@
   \begin{itemize}
     \item Pushes commits to the remote repository.
     \item Updates the remote branch reference.
+    \item Will fail if the remote branch is not an ancestor of the local branch unless \gflag{--force} (\gflag{-f}) is used.
     \item Tags must be pushed separately with the \gflag{--tags} flag.
   \end{itemize}
+  \vfill
+  \begin{block}{\gflag{--force-with-lease}}
+    The \gflag{--force} flag is dangerous and should not be used lightly because it can cause another person's work to be lost.
+    The \gflag{--force-with-lease} flag is safer since it will only force-push if the tracking branch points to the same commit as on the remote repo.
+  \end{block}
 \end{frame}
 
 \begin{frame}
@@ -1366,6 +1372,7 @@
   \frametitle{Exercise}
 
   \gbranch{topic} tracks \gbranch{origin/topic}. The \gbranch{topic} branch was rebased onto the tip of \gbranch{master}.
+  There are no new commits on the remote branch.
 
   \goal{Update the upstream branch.}
 
@@ -1391,8 +1398,8 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{\gitcmd{push -f}}
-  \framesubtitle{Push new commits upstream and forcibly update the tracking branch reference.}
+  \frametitle{\gitcmd{push --force-with-lease}}
+  \framesubtitle{Push new commits upstream and safely but forcibly update the tracking branch reference.}
 
   \begin{figure}
     \centering
@@ -1415,8 +1422,66 @@
   \end{figure}
 
   Commits \grefspec{C$'$} and \grefspec{E$'$} were pushed to the remote repository.
-  \gremotebranch{origin/topic} was forcibly updated to point to the tip of \gbranch{topic} (\grefspec{E$'$}).
+  \gremotebranch{origin/topic} matched upstream, so it was forcibly updated to point to the tip of \gbranch{topic} (\grefspec{E$'$}).
   Commits \grefspec{C} and \grefspec{E} have become unreachable.
+\end{frame}
+
+\begin{frame}
+  \frametitle{The dangers of \gitcmd{push --force}}
+  \framesubtitle{When someone else has pushed up their work.}
+
+  The \gbranch{topic} branch tracks \gremotebranch{origin/topic}.
+  The \gbranch{topic} branch was rebased onto the tip of \gbranch{master}.
+  Commit \grefspec{F} was pushed to the remote repo, but it has not yet been fetched.
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D -- C$'$ -- E$'$,
+          C -- E -- F[unreachable]
+        }
+      };
+      \gitbranch{master}
+      {above=of D} {D}
+      \gitbranch{topic}
+      {above=of E$'$} {E$'$}
+      \gitremotebranch{origin/topic}
+      {below=of E} {E}
+      \gitHEAD
+      {left=of topic} {topic}
+    \end{tikzpicture}
+  \end{figure}
+
+  What happens when you run \gitcmd{push --force}?
+\end{frame}
+
+\begin{frame}
+  \frametitle{The dangers of \gitcmd{push --force}}
+  \framesubtitle{When someone else has pushed up their work.}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D -- C$'$ -- E$'$,
+          C[unreachable] -- E[unreachable] -- F[unreachable]
+        }
+      };
+      \gitbranch{master}
+      {above=of D} {D}
+      \gitbranch{topic}
+      {above=of E$'$} {E$'$}
+      \gitremotebranch{origin/topic}
+      {right=of E$'$} {E$'$}
+      \gitHEAD
+      {left=of topic} {topic}
+    \end{tikzpicture}
+  \end{figure}
+
+  Commit \grefspec{F} is lost since the remote branch reference was forcibly updated.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
