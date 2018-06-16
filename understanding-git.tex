@@ -939,6 +939,7 @@
     \item Merges one or more branches into another.
     \item Simply updates the current branch to point to the tip of the other branch if the current branch is a direct ancestor (``fast-forward merge'').
     \item Creates a ``merge commit'' for other cases, which will have as parents the tips of the merged branches.
+    \item Does not delete the merged branch.
   \end{itemize}
   \begin{block}{Octopus merge}
     A merge involving more than two branches is called an ``octopus merge''.
@@ -1057,6 +1058,77 @@
   \begin{block}{\gflag{--no-ff}}
     The \gflag{--no-ff} flag can be used to force the creation of a merge commit even when a fast-forward merge is possible.
   \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\gitcmd{merge --squash}}
+  \framesubtitle{Merging without keeping the commits.}
+
+  \begin{itemize}
+    \item Merges the changes of a branch without the actual commits.
+    \item Keeps the changes in the index and waits for you to finish the merge with a \gitcmd{commit}. \gHEAD{} is not moved.
+    \item After committing, the result is a single regular commit that contains the changes.
+  \end{itemize}
+
+  Squash merges should be done carefully since history is discarded.
+  \note{
+    Discarding the history of a branch could mean that the resulting commit is not atomic,
+    other contributors are not credited in the commit,
+    any tags on the branch are not included in the history of the upstream branch,
+    or other consequences.
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Exercise}
+
+  The \gbranch{master} branch is checked out.
+
+  \goal{Merge the changes of the \gbranch{topic} branch into \gbranch{master} without introducing its commits.}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D,
+          C -- E
+        }
+      };
+      \gitbranch{master}
+      {above=of B} {B}
+      \gitbranch{topic}
+      {right=of E} {E}
+      \gitHEAD
+      {left=of master} {master}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\texttt{\gitcmd{merge --squash} \&\& \gitcmd{commit}}}
+  \framesubtitle{Merge the changes without introducing the commits.}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D -- F,
+          C -- E
+        }
+      };
+      \gitbranch{master}
+      {above=of F} {F}
+      \gitbranch{topic}
+      {right=of E} {E}
+      \gitHEAD
+      {left=of master} {master}
+    \end{tikzpicture}
+  \end{figure}
+
+  The new commit \grefspec{F} contains the combined changes of commits \grefspec{C} and \grefspec{E}.
+  It is not a merge commit, and commits \grefspec{C} and \grefspec{E} are not introduced into the history of \gbranch{master}.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
