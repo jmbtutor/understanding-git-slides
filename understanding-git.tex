@@ -1135,6 +1135,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Remote Repositories}
 
+\begin{frame}
+  \frametitle{What are remote repositories?}
+  \begin{itemize}
+    \item Git is distributed, so a project can reside in multiple places.
+    \item Remote repositories are repos that track the same project but reside elsewhere.
+    \item Local and remote repositories can interact with each other.
+    \item Remote repositories can be given names and are managed using \gitcmd{remote}.
+  \end{itemize}
+  \vfill
+  \begin{block}{\gremote{origin}}
+    \gremote{origin} is the default name of the default remote repository. Neither this name nor remote is special.
+  \end{block}
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\gitcmd{fetch}}
 
@@ -1146,11 +1160,6 @@
     \item Updates any remote branch references, but does not update any local ones.
     \item Does not move \gHEAD{}.
   \end{itemize}
-  Recall that Git is decentralized; \gitsubcmd{fetch} allows you to make use of commits and branches from other copies of the repository.
-  \vfill
-  \begin{block}{\gremote{origin}}
-    \gremote{origin} is the default name of the default remote repository. Neither this name nor remote is special.
-  \end{block}
 \end{frame}
 
 \begin{frame}
