@@ -1223,7 +1223,7 @@
   \frametitle{Notes on remote branches}
   \begin{itemize}
     \item Remote branches have the form \gremotebranch{$\langle$remoteName$\rangle$/$\langle$branchName$\rangle$} (e.g. \gremotebranch{origin/master})
-    \item Checking out a remote branch checks out the commit it points to, not the branch itself.
+    \item Checking out a remote branch checks out the commit it points to, not the branch itself, resulting in a detached \gHEAD{}.
     \item Remote branches are not automatically updated without running commands that do so such as \gitsubcmd{fetch} or \gitsubcmd{pull}, and \gitcmd{status} will reflect that.
   \end{itemize}
 \end{frame}
