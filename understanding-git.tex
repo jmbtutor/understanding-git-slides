@@ -99,6 +99,14 @@
 \begin{frame}
   \frametitle{Reading Git graphs}
   Git repositories are often represented using a directed acyclic graph (DAG).
+  \note{
+    \textbf{Directed:} The graph edges are one-way.\\
+    \textbf{Acyclic:} There is no way to return to a node once you have passed it.\\
+    \textbf{Graph:} A mathematical model with nodes and edges that connect nodes.
+
+    A DAG forms a tree structure, and you can refer to a connected Git DAG as a tree.\\
+  }
+
   \begin{figure}
     \centering
     \begin{tikzpicture}
@@ -123,12 +131,16 @@
   \vfill
   \begin{block}{Arrows}
     The arrows point to the commit's parent(s), not the flow of time.
+    \note{Think of the arrows as representing a ``depends on'' relationship.}
   \end{block}
 \end{frame}
 
 \begin{frame}
   \frametitle{Our reference repository}
   \defaultrepo
+  \note[item]{The initial commit is \grefspec{A}.}
+  \note[item]{There are two branches, \gbranch{master} and \gbranch{topic}.}
+  \note[item]{Commit \grefspec{D} was made after \gbranch{topic} split from the mainline.}
 \end{frame}
 
 \begin{frame}
@@ -149,8 +161,13 @@
     \item Commits record the changes of a repository.
     \item Commits also include a message, a timestamp (usually of creation), and an author.
     \item Except for the first commit, commits reference one or more parent commits.
+      \note[item]{More precisely, root commits have no parent. The first commit is a root commit, but a repo can have multiple root commits.}
     \item Commits are identified by a SHA-1 hash. This hash can be abbreviated to its unique prefix (usually 7).
+      \note[item]{The minimum abbreviated hash length is 4 characters.}
+      \note[item]{Commits are effectively read-only because changing any of the properties of a commit changes its hash.}
+      \note[item]{Linux Torvalds on SHA-1 collisions: \url{https://marc.info/?l=git&m=148787047422954}}
     \item The bulk of the Git model is the DAG of commits.
+      \note[item]{The rest of the Git model is the plumbing and the Git file system. This is highly out of scope for this presentation.}
   \end{itemize}
 \end{frame}
 
@@ -315,6 +332,12 @@
 
   After entering a commit message in the editor, commit \grefspec{F} is added containing the staged changes.
   \gHEAD{} and \gbranch{topic} are advanced to \grefspec{F}.
+
+  \note{
+    The commit message can be entered on the command line using the \gflag{-m} (\gflag{--message}) flag, with multiple \gflag{-m} flags being combined as multiple paragraphs.
+    Using this flag may create bad commit message habits, so consider using \gflag{-m} to start your message
+    and additionally pass the \gflag{-e} (\gflag{--edit}) flag to bring up the editor to continue editing your message.
+  }
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -355,6 +378,11 @@
     \end{tikzpicture}
   \end{figure}
   A new commit, \grefspec{D$'$}, that contains the same changes as \grefspec{D} was added on top of \grefspec{E}. \gHEAD{} and \gbranch{topic} were advanced to \grefspec{D$'$}.
+
+  \note{
+    This is a bad example because it would be better to do a \gitsubcmd{rebase} or a \gitsubcmd{merge} in this case,
+    but it is one of the simplest examples.
+  }
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -368,6 +396,11 @@
     \item Branches represent a line of development.
     \item Branches are lightweight labels that reference commits.
     \item Branches should \textbf{not} be thought of as a series of commits.
+      \note{
+        The last point is worth repeating: branches should \textbf{not} be thought of as a series of commits.
+        Much confusion about how branch operations in Git work can be caused by thinking of branches as a series of commits.
+        Though it seems to contradict the first point, upon closer inspection, it does not.
+      }
   \end{itemize}
   \vfill
   \begin{block}{\gbranch{master}}
@@ -532,6 +565,12 @@
     followed by a\\
     \hspace{2em}\gitcmd{checkout newbranch}.
   \end{block}
+
+  \note{
+    Another useful trick is to pass a \texttt{-} as the argument,
+    which checks out the last branch, commit or tag that you performed a \gitsubcmd{checkout} on.
+    Read the man page to see how you can go even further back.
+  }
 \end{frame}
 
 \begin{frame}
@@ -592,11 +631,13 @@
 
   \begin{itemize}
     \item Directly checking out a commit or tag results in a ``detached \gHEAD{}''.
+      \note[item]{A detached \gHEAD{} results in any situation where the ref that is checked out cannot normally be updated. Tags cannot be updated by issuing a \gitcmd{commit}, for example, so checking out a tag results in a detached \gHEAD{}.}
     \item Commits from this commit may be made, but they will be lost unless a branch or tag is made.
   \end{itemize}
   \vfill
   \begin{block}{Unreachable and dangling commits}
     Unreachable commits are commits that are not referenced by a branch or tag. Dangling commits are unreachable commits that aren't referenced by another commit. Unreachable commits may be checked out using their SHA-1 hash until they are garbage collected.
+    \note[item]{By default, garbage collection usually removes unneeded objects after two weeks. See the man page for \gitcmd{gc} for details.}
   \end{block}
 \end{frame}
 
@@ -762,8 +803,10 @@
   \vfill
   \begin{block}{Rebasing shared public branches}
     Don't rebase branches that others are working on or have branched off from, especially \gbranch{master}. Complications arise downstream when such a rebase is performed, and it is generally considered rude to rewrite public history.
-    %%% man git-rebase
+
+    \note[item]{The \texttt{git-rebase(1)} man page has a section on recovering from an upstream rebase.}
   \end{block}
+  \note[item]{\gitcmd{rebase} can do a lot more than reapplying commits to another base, including editing and reordering commits. More details can be found in the man page.} 
 \end{frame}
 
 \begin{frame}
@@ -797,6 +840,11 @@
   \end{figure}
 
   New commits \grefspec{C$'$} and \grefspec{E$'$} with the same changes as \grefspec{C} and \grefspec{E} respectively were applied onto the tip of \gbranch{master} (\grefspec{D}). Commits \grefspec{C} and \grefspec{E} have become unreachable.
+
+  \note{
+    Git visualizations will show branches where one is a direct ancestor of the other in a straight line like this.
+    This kind of presentation reinforces two facts: 1) \gbranch{master} is not special to Git, and 2) branches are just labels.
+  }
 \end{frame}
 
 \begin{frame}
@@ -807,7 +855,8 @@
     \item Perform a \gitsubcmd{reset --hard} to the target branch. This is the ``unwinding'' step.
     \item \gitsubcmd{cherry-pick} each commit one by one from the fork point to the former tip of the branch, excluding merge commits.
   \end{enumerate}
-  %%% http://think-like-a-git.net/sections/rebase-from-the-ground-up/using-git-cherry-pick-to-simulate-git-rebase.html
+
+  \note{Adapted from:\\{\scriptsize\url{http://think-like-a-git.net/sections/rebase-from-the-ground-up/using-git-cherry-pick-to-simulate-git-rebase.html}}}
 \end{frame}
 
 \begin{frame}
@@ -937,6 +986,11 @@
   \end{figure}
 
   Creating a temporary branch before the rebase prevents the original commits from becoming unreachable, meaning that restoring the original branch is as simple as doing a \gitsubcmd{reset} to the temporary branch.
+
+  \note{
+    \gitcmd{reflog} makes this trick unnecessary (unless you need to prevent the old commits from being garbage collected),
+    but creating a branch is simple to understand.
+  }
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -954,9 +1008,16 @@
   \begin{block}{Octopus merge}
     A merge involving more than two branches is called an ``octopus merge''.
     Support for such merges were added to Git for combining independent driver updates.
-    %%% https://redd.it/1vsvgs
-    %%% https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2cde51fbd0f3
-    %%% https://github.com/torvalds/linux/commit/2cde51fbd0f3
+    \note{
+      Using octopus merges reduces the noise in the branch.
+      If five branches need to be merged into another, there only needs to be one octopus merge commit instead of five regular merge commits.
+
+      There is a commit in the Linux kernel tree that has 66 parents, which Torvalds called a ``Cthulhu merge''.
+      It made the visualization of the graph hard to read, so in response, he suggested that octopus merges be kept to a maximum of 10--15 parents.
+
+      \url{https://marc.info/?l=linux-kernel&m=139033182525831}\\
+      \url{https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2cde51fbd0f3}\\
+    }
   \end{block}
 \end{frame}
 
@@ -1168,6 +1229,7 @@
   \framesubtitle{``Download objects and refs from another repository''}
   \begin{itemize}
     \item Downloads commits, branches and tags from a remote repository and makes them available in your local repository.
+      \note{Fetching tags can be suppressed with the \gflag{--no-tags} option.}
     \item Updates any remote branch references, but does not update any local ones.
     \item Does not move \gHEAD{}.
   \end{itemize}
@@ -1364,6 +1426,10 @@
   \end{figure}
 
   Git treats \gremotebranch{origin/topic} like any other branch. Since \gbranch{topic} is not a direct ancestor, a merge commit \grefspec{I} is made.
+  \note{
+    Strictly speaking, \gremotebranch{origin/topic} is just another ref, which is something that resolves to a commit.
+    Branches and tags are examples of refs.
+  }
 \end{frame}
 
 \begin{frame}
@@ -1405,12 +1471,15 @@
     \item Pushes commits to a remote repository.
     \item Updates the remote branch reference.
     \item Will fail if the remote branch is not an ancestor of the local branch unless \gflag{--force} (\gflag{-f}) is used.
+      \note[item]{The behaviour of \gitcmd{push} can be configured using the \texttt{push.default} option in the configuration file.}
     \item Tags must be pushed separately with the \gflag{--tags} flag.
+      \note[item]{It is not entirely true that tags must be pushed separately. Tags can be specified as arguments along with branches and they will be pushed.}
   \end{itemize}
   \vfill
   \begin{block}{\gflag{--force-with-lease}}
     The \gflag{--force} flag is dangerous and should not be used lightly because it can cause another person's work to be lost.
     The \gflag{--force-with-lease} flag is safer since it will only force-push if the tracking branch points to the same commit as on the remote repo.
+    \note[item]{To make it easier to specify \gflag{--force-with-lease}, you can make an alias.}
   \end{block}
 \end{frame}
 
@@ -1583,6 +1652,10 @@
   \end{figure}
 
   Commit \grefspec{F} is lost since the remote branch reference was forcibly updated.
+  \note{
+    Since Git is distributed, someone else \emph{might} have a copy of commit \grefspec{F} and you can recover from there,
+    but do not rely on that being the case.
+  }
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
