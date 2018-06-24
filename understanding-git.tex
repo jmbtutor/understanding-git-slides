@@ -353,35 +353,56 @@
 
 \begin{frame}
   \frametitle{Exercise}
-  \goal{Cherry-pick \grefspec{D} into the current branch.}
-  \defaultrepo
-\end{frame}
+  The \gbranch{master} branch is currently checked out.
+  Commit \grefspec{E} contains a useful change that you want to integrate right away.
 
-\begin{frame}
-  \frametitle{\gitcmd{cherry-pick D}}
-  \framesubtitle{Create a new commit from the changes in \grefspec{D}.}
+  \goal{Cherry-pick \grefspec{E} into the current branch.}
   \begin{figure}
     \centering
     \begin{tikzpicture}
       \gitDAG{
         A -- B -- {
           D,
-          C -- E -- D$'$
+          C -- E
         }
       };
       \gitbranch{master}
       {above=of D} {D}
       \gitbranch{topic}
-      {above=of D$'$} {D$'$}
+      {right=of E} {E}
       \gitHEAD
-      {above=of topic} {topic}
+      {left=of master} {master}
     \end{tikzpicture}
   \end{figure}
-  A new commit, \grefspec{D$'$}, that contains the same changes as \grefspec{D} was added on top of \grefspec{E}. \gHEAD{} and \gbranch{topic} were advanced to \grefspec{D$'$}.
+\end{frame}
+
+\begin{frame}
+  \frametitle{\gitcmd{cherry-pick E}}
+  \framesubtitle{Create a new commit from the changes in \grefspec{E}.}
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D -- E$'$,
+          C -- E
+        }
+      };
+      \gitbranch{master}
+      {above=of E$'$} {E$'$}
+      \gitbranch{topic}
+      {right=of E} {E}
+      \gitHEAD
+      {left=of master} {master}
+    \end{tikzpicture}
+  \end{figure}
+  A new commit, \grefspec{E$'$}, that contains the same changes as \grefspec{E} was added on top of \grefspec{D}. \gHEAD{} and \gbranch{master} were advanced to \grefspec{E$'$}.
 
   \note{
-    This is a bad example because it would be better to do a \gitsubcmd{rebase} or a \gitsubcmd{merge} in this case,
-    but it is one of the simplest examples.
+    Cherry-picking may result in merge conflicts later on.
+    Raymond Chen suggests using a merge-based strategy instead:
+
+    {\scriptsize\url{https://blogs.msdn.microsoft.com/oldnewthing/20180323-01/?p=98325}}
   }
 \end{frame}
 
