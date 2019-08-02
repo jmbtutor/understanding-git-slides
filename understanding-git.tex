@@ -408,6 +408,155 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\gitcmd{revert}}
+\begin{frame}
+  \frametitle{\gitcmd{revert}}
+  \framesubtitle{``Revert some existing commits''}
+  \begin{itemize}
+    \item Creates new commits that have the reverse patches of the given commits.
+    \item Advances \gHEAD{} and the current branch to the last of the new commits.
+  \end{itemize}
+  \vfill
+  \begin{block}{Creating a single revert commit}
+    \gitcmd{revert} creates a commit for each given commit by default.
+    To create a single revert commit can be created instead by passing the \gflag{-n} flag and committing the result.
+  \end{block}
+  \note{
+    To undo the effects of a revert commit, revert the revert commit.
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Exercise}
+  The \gbranch{master} branch is currently checked out.
+  Commit \grefspec{A} is problematic and must be reverted.
+
+  \goal{Revert commit \grefspec{A} (and only \grefspec{A}) non-destructively.}
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D,
+          C -- E
+        }
+      };
+      \gitbranch{master}
+      {above=of D} {D}
+      \gitbranch{topic}
+      {right=of E} {E}
+      \gitHEAD
+      {left=of master} {master}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\gitcmd{revert A}}
+  \framesubtitle{Create a new commit with the reverse patch of \grefspec{A}.}
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D -- A$^{-1}$,
+          C -- E
+        }
+      };
+      \gitbranch{master}
+      {above=of A$^{-1}$} {A$^{-1}$}
+      \gitbranch{topic}
+      {right=of E} {E}
+      \gitHEAD
+      {left=of master} {master}
+    \end{tikzpicture}
+  \end{figure}
+  A new commit, \grefspec{A$^{-1}$}, that contains the reverse changes as \grefspec{A} was added on top of \grefspec{D}.
+  \gHEAD{} and \gbranch{master} were advanced to \grefspec{A$^{-1}$}.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Exercise}
+  The \gbranch{master} branch is currently checked out.
+  Commits \grefspec{B} and \grefspec{D} were found to be problematic and need to be reverted.
+
+  \goal{Revert commits \grefspec{B} and \grefspec{D} non-destructively in a single commit.}
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D,
+          C -- E
+        }
+      };
+      \gitbranch{master}
+      {above=of D} {D}
+      \gitbranch{topic}
+      {right=of E} {E}
+      \gitHEAD
+      {left=of master} {master}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Attempt 1: \gitcmd{revert B..D}}
+  \framesubtitle{Revert the commits using the default commit strategy.}
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D -- D$^{-1}$ -- B$^{-1}$,
+          C -- E
+        }
+      };
+      \gitbranch{master}
+      {above=of B$^{-1}$} {B$^{-1}$}
+      \gitbranch{topic}
+      {right=of E} {E}
+      \gitHEAD
+      {left=of master} {master}
+    \end{tikzpicture}
+  \end{figure}
+
+  By default, \gitcmd{revert} will create one commit for each commit being reverted.
+  \note{
+    The revert commits are in reverse order because the range \texttt{..} is used.
+    If the commits were passed individually, they would be reverted in the order given.
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Attempt 2: \texttt{\gitcmd{revert -n B..D} \&\& \gitcmd{commit}}}
+  \framesubtitle{Revert the commits and manually commit the result.}
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D -- DB$^{-1}$,
+          C -- E
+        }
+      };
+      \gitbranch{master}
+      {above=of DB$^{-1}$} {DB$^{-1}$}
+      \gitbranch{topic}
+      {right=of E} {E}
+      \gitHEAD
+      {left=of master} {master}
+    \end{tikzpicture}
+  \end{figure}
+
+  By default, \gitcmd{revert} will create one commit for each commit being reverted.
+  \note{
+    The revert commits are in reverse order because the range \texttt{..} is used.
+    If the commits were passed individually, they would be reverted in the order given.
+  }
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Branches}
 \frame{\sectionpage}
