@@ -645,14 +645,14 @@
 
   The repository is checked out at \gbranch{topic}.
 
-  \goal{Without moving \gHEAD{}, create a new branch called \gbranch{newbranch} on the current commit.}
+  \goal{Without moving \gHEAD{}, create a new branch called \gbranch{feature} on the current commit.}
 
   \defaultrepo
 \end{frame}
 
 \begin{frame}
-  \frametitle{\gitcmd{branch newbranch}}
-  \framesubtitle{Create branch \gbranch{newbranch} on the current commit.}
+  \frametitle{\gitcmd{branch feature}}
+  \framesubtitle{Create branch \gbranch{feature} on the current commit.}
 
 
   \begin{figure}
@@ -668,19 +668,19 @@
       {above=of D} {D}
       \gitbranch{topic}
       {above=of E} {E}
-      \gitbranch{newbranch}
+      \gitbranch{feature}
       {right=of topic} {E}
       \gitHEAD
       {above=of topic} {topic}
     \end{tikzpicture}
   \end{figure}
 
-  A branch called \gbranch{newbranch} is created on the current commit and \gHEAD{} is not moved.
+  A branch called \gbranch{feature} is created on the current commit and \gHEAD{} is not moved.
 \end{frame}
 
 \begin{frame}
-  \frametitle{\gitcmd{branch -d newbranch}}
-  \framesubtitle{Delete the branch \gbranch{newbranch}.}
+  \frametitle{\gitcmd{branch -d feature}}
+  \framesubtitle{Delete the branch \gbranch{feature}.}
 
   \begin{figure}
     \centering
@@ -700,7 +700,7 @@
     \end{tikzpicture}
   \end{figure}
 
-  The branch \gbranch{newbranch} has been deleted.
+  The branch \gbranch{feature} has been deleted.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -767,11 +767,11 @@
     \item Updates the files in the working tree to match those in the commit.
   \end{itemize}
   \vfill
-  \begin{block}{\gitcmd{checkout -b newbranch}}
+  \begin{block}{\gitcmd{checkout -b feature}}
     The \gflag{-b} flag is transactionally equivalent to doing a\\
-    \hspace{2em}\gitcmd{branch newbranch}\\
+    \hspace{2em}\gitcmd{branch feature}\\
     followed by a\\
-    \hspace{2em}\gitcmd{checkout newbranch}.
+    \hspace{2em}\gitcmd{checkout feature}.
   \end{block}
 
   \note{
