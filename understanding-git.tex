@@ -569,11 +569,7 @@
     \end{tikzpicture}
   \end{figure}
 
-  By default, \gitcmd{revert} will create one commit for each commit being reverted.
-  \note{
-    The revert commits are in reverse order because the range \texttt{..} is used.
-    If the commits were passed individually, they would be reverted in the order given.
-  }
+  By using the \gflag{-n} flag, \gitcmd{revert} will batch the changes and wait for you to commit the result.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
