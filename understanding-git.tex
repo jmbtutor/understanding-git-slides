@@ -1414,6 +1414,36 @@
   It is not a merge commit, and commits \grefspec{C} and \grefspec{E} are not introduced into the history of \gbranch{master}.
 \end{frame}
 
+\begin{frame}
+  \frametitle{Merging in a reachable commit has no effect}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D -- F,
+          C -- E
+        }
+      };
+      \gitbranch{master}
+      {above=of F} {F}
+      \gitbranch{revert}
+      {above=of B} {B}
+      \gitbranch{topic}
+      {right=of E} {E}
+      \gitHEAD
+      {left=of master} {master}
+    \end{tikzpicture}
+  \end{figure}
+
+  Attempting to merge the \gbranch{revert} branch into the \gbranch{master} branch will have no effect because there are no new commits to introduce.
+  \vfill
+  \begin{block}{Non-destructively reverting a branch}
+    You cannot non-destructively revert a branch to a previous state by doing the above. Use \gitcmd{revert} instead.
+  \end{block}
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Remote Repositories}
