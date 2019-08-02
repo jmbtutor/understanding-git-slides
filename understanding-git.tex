@@ -153,7 +153,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Commits}
-\frame{\sectionpage}
+\begin{frame}
+  \sectionpage
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{
+        A -- B -- {
+          D,
+          C -- E
+        }
+      };
+      \gitbranchfade{master}
+      {above=of D} {D}
+      \gitremotebranchfade{origin/master}
+      {right=of master} {D}
+      \gitbranchfade{topic}
+      {above=of E} {E}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
 \subsection{Introduction}
 
 \begin{frame}
@@ -559,7 +579,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Branches}
-\frame{\sectionpage}
+\begin{frame}
+  \sectionpage
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{[nodes=unreachable]
+        A -- B -- {
+          D,
+          C -- E
+        }
+      };
+      \gitbranch{master}
+      {above=of D} {D}
+      \gitremotebranchfade{origin/master}
+      {right=of master} {D}
+      \gitbranch{topic}
+      {above=of E} {E}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
 \subsection{Introduction}
 
 \begin{frame}
@@ -1377,7 +1417,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Remote Repositories}
-\frame{\sectionpage}
+\begin{frame}
+  \sectionpage
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \gitDAG{[nodes=unreachable]
+        A -- B -- {
+          D,
+          C -- E
+        }
+      };
+      \gitbranchfade{master}
+      {above=of D} {D}
+      \gitremotebranch{origin/master}
+      {right=of master} {D}
+      \gitbranchfade{topic}
+      {above=of E} {E}
+    \end{tikzpicture}
+  \end{figure}
+\end{frame}
 \subsection{Introduction}
 
 \begin{frame}

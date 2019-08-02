@@ -184,6 +184,11 @@
     align          = left,
     font           = \ttfamily\tiny,
   },
+  fade/.style={
+    reset preaction,
+    draw opacity = .25,
+    fill opacity = .25,
+  },
 }
 
 % directed acyclic graph
@@ -205,6 +210,19 @@
   \draw[DAGrefedge] (#4) -- (\nodename@gitdags);
 }
 
+\newcommand\gitbranchfade[4][]{%
+  \renewcommand\nodename@gitdags{#1}%
+  \if\relax\detokenize{#1}\relax% check for empty optional argument
+    \renewcommand\nodename@gitdags{#2}%
+  \fi
+  \node[
+    DAGref,
+    fade,
+    fill = yellow!30,
+  ] (\nodename@gitdags) [#3] {#2};
+  \draw[DAGrefedge, fade] (#4) -- (\nodename@gitdags);
+}
+
 % remote-branch reference
 \newcommand\gitremotebranch[4][]{%
   \renewcommand\nodename@gitdags{#1}%
@@ -218,6 +236,19 @@
   \draw[DAGrefedge] (#4) -- (\nodename@gitdags);
 }
 
+\newcommand\gitremotebranchfade[4][]{%
+  \renewcommand\nodename@gitdags{#1}%
+  \if\relax\detokenize{#1}\relax% check for empty optional argument
+    \renewcommand\nodename@gitdags{#2}%
+  \fi
+  \node[
+    DAGref,
+    fade,
+    fill = solarized-blue!20,
+  ] (\nodename@gitdags) [#3] {#2};
+  \draw[DAGrefedge, fade] (#4) -- (\nodename@gitdags);
+}
+
 % tag reference
 \newcommand\gittag[4][]{%
   \renewcommand\nodename@gitdags{#1}%
@@ -229,6 +260,19 @@
     fill = solarized-magenta!20,
   ] (\nodename@gitdags) [#3] {#2};
   \draw[DAGrefedge] (#4) -- (\nodename@gitdags);
+}
+
+\newcommand\gittagfade[4][]{%
+  \renewcommand\nodename@gitdags{#1}%
+  \if\relax\detokenize{#1}\relax% check for empty optional argument
+    \renewcommand\nodename@gitdags{#2}%
+  \fi
+  \node[
+    DAGref,
+    fade,
+    fill = solarized-magenta!20,
+  ] (\nodename@gitdags) [#3] {#2};
+  \draw[DAGrefedge, fade] (#4) -- (\nodename@gitdags);
 }
 
 % HEAD symbolic reference
